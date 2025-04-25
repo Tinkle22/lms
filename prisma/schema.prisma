@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(TEACHER)
+  schoolId      String?
+  school        School?   @relation(fields: [schoolId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model School {
+  id            String    @id @default(cuid())
+  name          String
+  location      String
+  contactEmail  String
+  contactPhone  String
+  schoolType    SchoolType
+  users         User[]
+  students      Student[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Student {
+  id              String   @id @default(cuid())
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime
+  gender          String
+  admissionNumber String
+  class           String
+  section         String?
+  parentName      String
+  parentEmail     String
+  parentPhone     String
+  address         String?
+  schoolId        String
+  school          School   @relation(fields: [schoolId], references: [id])
+  academicRecords AcademicRecord[] // Add this line
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([schoolId])
+}
+
+model AcademicRecord {
+  id            String    @id @default(cuid())
+  subject       String
+  grade         Grade
+  term          String
+  year          Int
+  teacherComment String?
+  studentId     String
+  student       Student   @relation(fields: [studentId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum Role {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum SchoolType {
+  PRIMARY
+  SECONDARY
+  COLLEGE
+  UNIVERSITY
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Grade {
+  A
+  B
+  C
+  D
+  E
+  F
+}
