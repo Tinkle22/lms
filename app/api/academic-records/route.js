@@ -51,43 +51,72 @@ export async function POST(request) {
 
     const body = await request.json();
     
-    // Create the academic record
-    const record = await prisma.academicRecord.create({
-      data: {
-        subject: body.subject,
-        grade: body.grade,
-        term: body.term,
-        year: body.year,
-        teacherComment: body.teacherComment,
-        studentId: body.studentId,
-      },
-      include: {
-        student: {
-          select: {
-            firstName: true,
-            lastName: true,
-            class: true,
-            section: true,
-            parentName: true,
-            parentEmail: true,
-          }
-        }
+    // Check if we have multiple subjects
+    if (!Array.isArray(body.subjects) || body.subjects.length === 0) {
+      return NextResponse.json(
+        { message: 'At least one subject is required' },
+        { status: 400 }
+      );
+    }
+
+    // Convert year to integer
+    const year = parseInt(body.year, 10);
+    if (isNaN(year)) {
+      return NextResponse.json(
+        { message: 'Year must be a valid number' },
+        { status: 400 }
+      );
+    }
+
+    // Get student data first
+    const student = await prisma.student.findUnique({
+      where: { id: body.studentId },
+      select: {
+        firstName: true,
+        lastName: true,
+        class: true,
+        section: true,
+        parentName: true,
+        parentEmail: true,
       }
     });
 
-    // Send email notification
+    if (!student) {
+      return NextResponse.json(
+        { message: 'Student not found' },
+        { status: 404 }
+      );
+    }
+
+    // Create multiple academic records in a transaction
+    const records = await prisma.$transaction(
+      body.subjects.map(subjectData => 
+        prisma.academicRecord.create({
+          data: {
+            subject: subjectData.subject,
+            grade: subjectData.grade,
+            term: body.term,
+            year: year, // Use the parsed integer
+            teacherComment: subjectData.teacherComment || '',
+            studentId: body.studentId,
+          }
+        })
+      )
+    );
+
+    // Send a single consolidated email with all subjects
     try {
-      await sendAcademicReport(record.student, record);
+      await sendAcademicReport(student, records, body.term, year.toString());
     } catch (emailError) {
       console.error('Failed to send email notification:', emailError);
       // Continue with the response even if email fails
     }
 
-    return NextResponse.json(record);
+    return NextResponse.json(records);
   } catch (error) {
-    console.error('Error creating academic record:', error);
+    console.error('Error creating academic records:', error);
     return NextResponse.json(
-      { message: 'Failed to create academic record' },
+      { message: 'Failed to create academic records' },
       { status: 500 }
     );
   }
