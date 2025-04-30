@@ -74,6 +74,7 @@ enum Role {
   ADMIN
   TEACHER
   STUDENT
+  SUPER_ADMIN
 }
 
 enum SchoolType {

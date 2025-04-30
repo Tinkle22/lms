@@ -1,13 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered");
   
@@ -17,6 +18,18 @@ export default function Login() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (status === 'authenticated') {
+      console.log("Session in useEffect:", session);
+      if (session.user.role === 'SUPER_ADMIN') {
+        router.push('/super-dashboard');
+      } else {
+        router.push('/dashboard');
+      }
+    }
+  }, [status, session, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,18 +42,26 @@ export default function Login() {
     setError("");
 
     try {
+      console.log("Attempting login with:", formData.email);
+      
       const result = await signIn("credentials", {
         email: formData.email,
         password: formData.password,
         redirect: false,
       });
 
+      console.log("Sign in result:", result);
+
       if (result.error) {
         throw new Error("Invalid email or password");
       }
 
-      router.push("/dashboard");
+      // Instead of fetching user data, reload the page to trigger the useEffect
+      // This ensures we're using the session data from NextAuth
+      window.location.reload();
+      
     } catch (error) {
+      console.error("Login error:", error);
       setError(error.message);
     } finally {
       setLoading(false);

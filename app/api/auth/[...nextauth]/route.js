@@ -28,25 +28,34 @@ export const authOptions = {
         });
 
         if (!user) {
+          console.log("User not found:", credentials.email);
           return null;
         }
 
-        const passwordMatch = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+        try {
+          const passwordMatch = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
 
-        if (!passwordMatch) {
+          if (!passwordMatch) {
+            console.log("Password doesn't match for:", credentials.email);
+            return null;
+          }
+
+          console.log("Login successful for:", user.email, "with role:", user.role);
+          
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            schoolId: user.schoolId
+          };
+        } catch (error) {
+          console.error("Error comparing passwords:", error);
           return null;
         }
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          schoolId: user.schoolId
-        };
       }
     })
   ],
@@ -76,6 +85,7 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
 };
 
 const handler = NextAuth(authOptions);
