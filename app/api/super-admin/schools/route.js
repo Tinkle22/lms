@@ -11,8 +11,21 @@ export async function GET(request) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    // Get query parameters for filtering
+    const { searchParams } = new URL(request.url);
+    const approvalStatus = searchParams.get('approvalStatus');
+    
+    // Build the where clause based on filters
+    const where = {};
+    if (approvalStatus === 'pending') {
+      where.isApproved = false;
+    } else if (approvalStatus === 'approved') {
+      where.isApproved = true;
+    }
+
     // Get all schools with counts
     const schools = await prisma.school.findMany({
+      where,
       include: {
         _count: {
           select: {
@@ -22,14 +35,16 @@ export async function GET(request) {
         },
       },
       orderBy: {
-        name: 'asc',
+        createdAt: 'desc', // Show newest schools first
       },
     });
 
     // Get total counts for stats
-    const [totalUsers, totalStudents] = await Promise.all([
+    const [totalUsers, totalStudents, totalSchools, approvedSchools] = await Promise.all([
       prisma.user.count(),
       prisma.student.count(),
+      prisma.school.count(),
+      prisma.school.count({ where: { isApproved: true } }),
     ]);
 
     // Format the response
@@ -40,6 +55,7 @@ export async function GET(request) {
       contactEmail: school.contactEmail,
       contactPhone: school.contactPhone,
       schoolType: school.schoolType,
+      isApproved: school.isApproved,
       userCount: school._count.users,
       studentCount: school._count.students,
       createdAt: school.createdAt,
@@ -47,8 +63,8 @@ export async function GET(request) {
 
     return NextResponse.json({
       schools: formattedSchools,
-      totalSchools: schools.length,
-      activeSchools: schools.length, // You can modify this if you have an active status
+      totalSchools,
+      activeSchools: approvedSchools,
       totalUsers,
       totalStudents,
     });
@@ -78,6 +94,7 @@ export async function POST(request) {
       adminName,
       adminEmail,
       adminPassword,
+      isApproved = true, // Super admin created schools are approved by default
     } = body;
 
     // Validate required fields
@@ -115,6 +132,7 @@ export async function POST(request) {
           contactEmail,
           contactPhone,
           schoolType,
+          isApproved, // Set approval status
         },
       });
 

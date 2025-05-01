@@ -1,7 +1,9 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterSchool() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function RegisterSchool() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,7 +46,8 @@ export default function RegisterSchool() {
         throw new Error(data.message || "Failed to register school");
       }
 
-      router.push("/login?registered=true");
+      setSuccess(true);
+      // We don't redirect immediately to show the success message
     } catch (error) {
       setError(error.message);
     } finally {
@@ -51,9 +55,53 @@ export default function RegisterSchool() {
     }
   };
 
+  if (success) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-6">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-lg font-medium text-green-800">Registration Successful!</h3>
+              <div className="mt-2 text-green-700">
+                <p>Your school registration has been submitted successfully.</p>
+                <p className="mt-2">A super administrator will review your application. You'll receive an email at {formData.adminEmail} once your school is approved.</p>
+                <p className="mt-4">Please note that you won't be able to access the dashboard until your school is approved.</p>
+              </div>
+              <div className="mt-4">
+                <Link href="/login" className="text-green-700 underline font-medium">
+                  Return to login page
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Register Your School</h1>
+      
+      <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm text-blue-700">
+              After registration, your school will need to be approved by a system administrator before you can access the dashboard. You'll receive an email notification once approved.
+            </p>
+          </div>
+        </div>
+      </div>
       
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -61,10 +109,13 @@ export default function RegisterSchool() {
         </div>
       )}
       
+      {/* Rest of the form remains the same */}
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* School Information section - unchanged */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">School Information</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Existing school form fields */}
             <div>
               <label className="block mb-1">School Name</label>
               <input
@@ -127,6 +178,7 @@ export default function RegisterSchool() {
           </div>
         </div>
 
+        {/* Administrator Account section - unchanged */}
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Administrator Account</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

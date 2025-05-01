@@ -10,11 +10,11 @@ export default function Home() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center">
             <Image
-              src="https://placehold.co/400x400/2563eb/FFFFFF?text=S"
+              src="/logo.png"
               alt="SchoolMS Logo"
               width={40}
               height={40}
-              className="mr-2 rounded-lg"
+              className="mr-2"
             />
             <span className="font-bold text-2xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               SchoolMS
@@ -69,7 +69,7 @@ export default function Home() {
               </div>
               <div className="relative h-[600px] hidden lg:block">
                 <Image
-                  src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80"
+                  src="/hero-image.png"
                   alt="School Management System"
                   fill
                   className="object-contain"
@@ -91,13 +91,7 @@ export default function Home() {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="p-8 rounded-2xl bg-gradient-to-b from-blue-50 to-white border border-blue-100 hover:shadow-xl transition-all duration-300">
                 <div className="w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
-                  <Image 
-                    src="https://images.unsplash.com/photo-1577896851231-70ef18881754?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                    alt="Student Management" 
-                    width={28} 
-                    height={28} 
-                    className="text-white rounded-lg" 
-                  />
+                  <Image src="/student-icon.png" alt="Student Management" width={28} height={28} className="text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Student Management</h3>
                 <p className="text-gray-600">
@@ -106,13 +100,7 @@ export default function Home() {
               </div>
               <div className="p-8 rounded-2xl bg-gradient-to-b from-indigo-50 to-white border border-indigo-100 hover:shadow-xl transition-all duration-300">
                 <div className="w-14 h-14 bg-indigo-600 rounded-xl flex items-center justify-center mb-6">
-                  <Image 
-                    src="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                    alt="Academic Records" 
-                    width={28} 
-                    height={28}
-                    className="rounded-lg"
-                  />
+                  <Image src="/academic-icon.png" alt="Academic Records" width={28} height={28} />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Academic Records</h3>
                 <p className="text-gray-600">
@@ -121,13 +109,7 @@ export default function Home() {
               </div>
               <div className="p-8 rounded-2xl bg-gradient-to-b from-purple-50 to-white border border-purple-100 hover:shadow-xl transition-all duration-300">
                 <div className="w-14 h-14 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
-                  <Image 
-                    src="https://images.unsplash.com/photo-1507537297725-24a1c029d3ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                    alt="User Roles" 
-                    width={28} 
-                    height={28}
-                    className="rounded-lg"
-                  />
+                  <Image src="/roles-icon.png" alt="User Roles" width={28} height={28} />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">Smart Access Control</h3>
                 <p className="text-gray-600">
@@ -146,13 +128,7 @@ export default function Home() {
               <div className="space-y-8">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Image 
-                      src="https://images.unsplash.com/photo-1633613286991-611fe299c4be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                      alt="Check" 
-                      width={24} 
-                      height={24}
-                      className="rounded-full"
-                    />
+                    <Image src="/check-icon.png" alt="Check" width={24} height={24} />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Efficient Management</h3>
@@ -161,13 +137,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                    <Image 
-                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                      alt="Reports" 
-                      width={24} 
-                      height={24}
-                      className="rounded-full"
-                    />
+                    <Image src="/reports-icon.png" alt="Reports" width={24} height={24} />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Comprehensive Reports</h3>
@@ -178,13 +148,7 @@ export default function Home() {
               <div className="space-y-8">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-                    <Image 
-                      src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                      alt="Security" 
-                      width={24} 
-                      height={24}
-                      className="rounded-full"
-                    />
+                    <Image src="/security-icon.png" alt="Security" width={24} height={24} />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">Enhanced Security</h3>
@@ -193,13 +157,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                    <Image 
-                      src="https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" 
-                      alt="Support" 
-                      width={24} 
-                      height={24}
-                      className="rounded-full"
-                    />
+                    <Image src="/support-icon.png" alt="Support" width={24} height={24} />
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>

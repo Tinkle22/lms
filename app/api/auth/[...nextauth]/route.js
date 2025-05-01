@@ -43,6 +43,12 @@ export const authOptions = {
             return null;
           }
 
+          // Check if the user is a school admin and if their school is approved
+          if (user.role === 'ADMIN' && user.school && !user.school.isApproved) {
+            console.log("School not approved for:", user.email);
+            throw new Error("Your school is pending approval by a system administrator.");
+          }
+
           console.log("Login successful for:", user.email, "with role:", user.role);
           
           return {
@@ -53,8 +59,8 @@ export const authOptions = {
             schoolId: user.schoolId
           };
         } catch (error) {
-          console.error("Error comparing passwords:", error);
-          return null;
+          console.error("Error during authentication:", error);
+          throw error; // Propagate the error to show the message to the user
         }
       }
     })

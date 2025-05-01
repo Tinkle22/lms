@@ -29,6 +29,7 @@ model School {
   contactEmail  String
   contactPhone  String
   schoolType    SchoolType
+  isApproved    Boolean   @default(false)
   users         User[]
   students      Student[]
   createdAt     DateTime  @default(now())
