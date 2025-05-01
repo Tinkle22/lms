@@ -13,6 +13,7 @@ export default function SchoolApprovals() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [processingApproval, setProcessingApproval] = useState(null);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     // Redirect if not super admin
@@ -40,8 +41,11 @@ export default function SchoolApprovals() {
     }
   }, [session, status, router]);
 
-  const handleApprove = async (schoolId) => {
+  const handleApprove = async (schoolId, schoolName) => {
     setProcessingApproval(schoolId);
+    setError('');
+    setSuccessMessage('');
+    
     try {
       const response = await fetch('/api/super-admin/schools/approve', {
         method: 'POST',
@@ -51,13 +55,23 @@ export default function SchoolApprovals() {
         body: JSON.stringify({ schoolId }),
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.message || 'Failed to approve school');
       }
 
       // Remove the approved school from the list
       setPendingSchools(pendingSchools.filter(school => school.id !== schoolId));
+      
+      // Show success message with email status
+      setSuccessMessage(
+        `School "${schoolName}" has been approved successfully. ${
+          data.emailSent 
+            ? 'A notification email has been sent to the school administrator.' 
+            : 'No email notification was sent (admin email not found).'
+        }`
+      );
     } catch (error) {
       setError(error.message);
     } finally {
@@ -91,6 +105,21 @@ export default function SchoolApprovals() {
             </div>
             <div className="ml-3">
               <p className="text-sm text-red-700">{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-green-700">{successMessage}</p>
             </div>
           </div>
         </div>
@@ -165,7 +194,7 @@ export default function SchoolApprovals() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => handleApprove(school.id)}
+                        onClick={() => handleApprove(school.id, school.name)}
                         disabled={processingApproval === school.id}
                         className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 mr-2"
                       >

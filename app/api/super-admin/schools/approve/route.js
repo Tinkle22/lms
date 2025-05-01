@@ -2,6 +2,18 @@ import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../auth/[...nextauth]/route';
+import nodemailer from 'nodemailer';
+
+// Configure email transporter
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true',
+  auth: {
+    user: process.env.SMTP_USER || 'mutalemattlesa@gmail.com',
+    pass: process.env.SMTP_PASSWORD || 'password',
+  },
+});
 
 export async function POST(request) {
   try {
@@ -39,13 +51,43 @@ export async function POST(request) {
       data: { isApproved: true }
     });
 
-    // In a real application, you would send an email to the school admin here
-    // For now, we'll just log it
-    console.log(`School ${school.name} has been approved. Notification would be sent to ${school.users[0]?.email}`);
+    // Send email notification to school admin
+    const schoolAdmin = school.users[0];
+    if (schoolAdmin && schoolAdmin.email) {
+      try {
+        await transporter.sendMail({
+          from: process.env.EMAIL_FROM || 'noreply@lms.example.com',
+          to: schoolAdmin.email,
+          subject: 'Your School Registration Has Been Approved',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #4a5568;">School Registration Approved</h2>
+              <p>Dear ${schoolAdmin.name},</p>
+              <p>We're pleased to inform you that your school <strong>${school.name}</strong> has been approved on our Learning Management System.</p>
+              <p>You can now log in to your admin dashboard using your registered email and password.</p>
+              <div style="margin: 30px 0;">
+                <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/login" 
+                   style="background-color: #4299e1; color: white; padding: 12px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                  Login to Dashboard
+                </a>
+              </div>
+              <p>If you have any questions or need assistance, please contact our support team.</p>
+              <p>Thank you for choosing our platform!</p>
+              <p>Best regards,<br>LMS Support Team</p>
+            </div>
+          `,
+        });
+        console.log(`Approval email sent to ${schoolAdmin.email} for school ${school.name}`);
+      } catch (emailError) {
+        console.error('Error sending approval email:', emailError);
+        // We don't want to fail the approval if email sending fails
+      }
+    }
 
     return NextResponse.json({ 
       message: 'School approved successfully',
-      school: updatedSchool
+      school: updatedSchool,
+      emailSent: !!schoolAdmin?.email
     });
   } catch (error) {
     console.error('Error approving school:', error);
