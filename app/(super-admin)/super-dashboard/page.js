@@ -25,7 +25,8 @@ export default function SuperAdminDashboard() {
     totalSchools: 0,
     activeSchools: 0,
     totalUsers: 0,
-    totalStudents: 0
+    totalStudents: 0,
+    pendingSchoolsCount: 0 // Add state for pending count
   });
 
   useEffect(() => {
@@ -46,7 +47,8 @@ export default function SuperAdminDashboard() {
           totalSchools: data.totalSchools || 0,
           activeSchools: data.activeSchools || 0,
           totalUsers: data.totalUsers || 0,
-          totalStudents: data.totalStudents || 0
+          totalStudents: data.totalStudents || 0,
+          pendingSchoolsCount: data.pendingSchoolsCount || 0 // Set pending count from API
         });
       } catch (error) {
         setError(error.message || 'An error occurred');
@@ -75,13 +77,31 @@ export default function SuperAdminDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Super Admin Dashboard">
-        <Link
-          href="/super-dashboard/schools/add"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          Add School
-        </Link>
+ 
       </PageHeader>
+
+      {/* Pending Approvals Notification */}
+      {stats.pendingSchoolsCount > 0 && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-yellow-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3 flex-1 md:flex md:justify-between">
+              <p className="text-sm text-yellow-700">
+                There {stats.pendingSchoolsCount === 1 ? 'is' : 'are'} <span className="font-medium">{stats.pendingSchoolsCount}</span> school{stats.pendingSchoolsCount === 1 ? '' : 's'} pending approval.
+              </p>
+              <p className="mt-3 text-sm md:mt-0 md:ml-6">
+                <Link href="/approvals" className="whitespace-nowrap font-medium text-yellow-700 hover:text-yellow-600">
+                  View Approvals <span aria-hidden="true">&rarr;</span>
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
@@ -224,13 +244,13 @@ export default function SuperAdminDashboard() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link
-                        href={`/super-dashboard/schools/${school.id}`}
+                        href={`/super-dashboard/school/${school.id}`}
                         className="text-blue-600 hover:text-blue-900 mr-4"
                       >
                         View
                       </Link>
                       <Link
-                        href={`/super-dashboard/schools/edit/${school.id}`}
+                        href={`/super-dashboard/school/edit/${school.id}`}
                         className="text-indigo-600 hover:text-indigo-900"
                       >
                         Edit

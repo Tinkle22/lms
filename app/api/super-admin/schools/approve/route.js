@@ -56,7 +56,7 @@ export async function POST(request) {
     if (schoolAdmin && schoolAdmin.email) {
       try {
         await transporter.sendMail({
-          from: process.env.EMAIL_FROM || 'noreply@lms.example.com',
+          from: process.env.SMTP_FROM || 'noreply@lms.example.com',
           to: schoolAdmin.email,
           subject: 'Your School Registration Has Been Approved',
           html: `

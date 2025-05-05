@@ -39,12 +39,13 @@ export async function GET(request) {
       },
     });
 
-    // Get total counts for stats
-    const [totalUsers, totalStudents, totalSchools, approvedSchools] = await Promise.all([
+    // Get total counts for stats and pending count
+    const [totalUsers, totalStudents, totalSchools, approvedSchools, pendingSchoolsCount] = await Promise.all([
       prisma.user.count(),
       prisma.student.count(),
       prisma.school.count(),
       prisma.school.count({ where: { isApproved: true } }),
+      prisma.school.count({ where: { isApproved: false } }) // Add count for pending schools
     ]);
 
     // Format the response
@@ -67,6 +68,7 @@ export async function GET(request) {
       activeSchools: approvedSchools,
       totalUsers,
       totalStudents,
+      pendingSchoolsCount, // Include pending count in the response
     });
   } catch (error) {
     console.error('Error fetching schools:', error);

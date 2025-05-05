@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import PageHeader from '@/app/components/PageHeader';
 import Card from '@/app/components/Card';
+import Link from 'next/link'; // Import Link
 
 export default function SchoolApprovals() {
   const { data: session, status } = useSession();
@@ -92,82 +93,84 @@ export default function SchoolApprovals() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 p-4 md:p-6"> {/* Added padding */}
       <PageHeader title="School Approval Requests" />
 
+      {/* Error Notification */}
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-red-700">{error}</p>
-            </div>
+        <div className="bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-md shadow-sm flex items-start space-x-3"> {/* Adjusted colors/padding */}
+          <div className="flex-shrink-0 pt-0.5">
+            <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+            <p className="text-sm font-medium">Error</p>
+            <p className="text-sm mt-1">{error}</p>
           </div>
         </div>
       )}
 
+      {/* Success Notification */}
       {successMessage && (
-        <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm text-green-700">{successMessage}</p>
-            </div>
+        <div className="bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-md shadow-sm flex items-start space-x-3"> {/* Adjusted colors/padding */}
+          <div className="flex-shrink-0 pt-0.5">
+            <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div className="ml-3">
+             <p className="text-sm font-medium">Success</p>
+             <p className="text-sm mt-1">{successMessage}</p>
           </div>
         </div>
       )}
 
       <Card>
-        <h3 className="text-lg font-medium mb-4">Pending School Approvals</h3>
+        <h3 className="text-xl font-semibold text-gray-800 mb-5">Pending School Approvals</h3> {/* Adjusted heading style */}
         {pendingSchools.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-16"> {/* Increased padding */}
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p className="mt-4 text-gray-500">No pending approval requests.</p>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">No pending approvals</h3>
+            <p className="mt-1 text-sm text-gray-500">All school registration requests have been processed.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto border border-gray-200 rounded-md"> {/* Added border and rounded */}
             <table className="min-w-full divide-y divide-gray-200">
-              <thead>
+              <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  {/* Adjusted padding and text style for headers */}
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     School Name
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Location
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contact
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact Email
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Registered On
                   </th>
-                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {pendingSchools.map((school) => (
-                  <tr key={school.id} className="hover:bg-gray-50 transition-colors">
+                {pendingSchools.map((school, index) => (
+                  <tr key={school.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-blue-50 transition-colors duration-150`}> {/* Added zebra striping and hover */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                            <span className="text-blue-600 font-medium text-lg">
-                              {school.name.charAt(0)}
+                          <div className="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center ring-1 ring-blue-300"> {/* Adjusted avatar style */}
+                            <span className="text-blue-700 font-semibold text-sm">
+                              {school.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                         </div>
@@ -176,36 +179,44 @@ export default function SchoolApprovals() {
                         </div>
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{school.location}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{school.location}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                        {school.schoolType}
+                      <span className="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 capitalize">
+                        {school.schoolType.toLowerCase()}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{school.contactEmail}</div>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{school.contactEmail}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500"> {/* Lighter text for date */}
+                      {new Date(school.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {new Date(school.createdAt).toLocaleDateString()}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3"> {/* Added space */}
+                      {/* Improved Button Styles */}
                       <button
                         onClick={() => handleApprove(school.id, school.name)}
                         disabled={processingApproval === school.id}
-                        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50 mr-2"
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {processingApproval === school.id ? 'Approving...' : 'Approve'}
+                        {processingApproval === school.id ? (
+                           <>
+                             <svg className="animate-spin -ml-0.5 mr-2 h-4 w-4 text-white" /* ... spinner svg ... */ >
+                                {/* ... spinner paths ... */}
+                             </svg>
+                             Approving...
+                           </>
+                        ) : (
+                          'Approve'
+                        )}
                       </button>
-                      <button
-                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300"
-                        onClick={() => router.push(`/super-dashboard/schools/${school.id}`)}
+                      <Link
+                        href={`/super-dashboard/schools/${school.id}`} // Use Link for navigation
+                        className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         View Details
-                      </button>
+                      </Link>
+                      {/* Add a Reject button if needed */}
+                      {/* <button className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        Reject
+                      </button> */}
                     </td>
                   </tr>
                 ))}
